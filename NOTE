@@ -1,0 +1,17 @@
+注一 : 当 Pattern 为 BEGIN 或 END 时, getline 将由 stdin 读取数据, 否则由awk正处理的数据文件上读取数据.
+getline 一次读取一行数据, 若读取成功则return 1, 若读取失败则return -1, 若遇到文件结束(EOF), 则return 0;
+本程序使用 getline 所 return 的数据来做为 while 判断循环停止的条件,某些awk版本较旧,并不容许使用者改变 $0 之值. 这种版的 awk 执行本程序时会产生 Error, 读者可于 getline 之后置上一个变量 (如此, getline 读进来的数据便不会被置于 $0 ), 或直接改用gawk便可解决.
+
+
+注二 : awk程序中, 文件名称 today_rpt1 的前后须以" (双引号)括住, 表示 today_rpt1 为一字符串常量. 若未以"括住, 则 today_rpt1 将被awk解释为一个变量名称.
+
+
+注三 : 本程序中若使用 ">" 将数据重导到 today_rpt1, awk 第一次执行该指令时会产生一个新档 today_rpt1, 其后再执行该指令时则把数据追加到today_rpt1文件末, 并非每执行一次就重开一个新文件.
+若采用">>"其差异仅在第一次执行该指令时, 若已存在today_rpt1则 awk 将直接把数据append在原文件之末尾. 这一点, 与UNIX中的用法不同.
+
+注四 : ( 如 : print $1,$2 | "sort -k 1" ) 在a 语法中, awk所输出的数据将转送往 Shell , 由 Shell 的命令进行处理.以上例而言, print 所输出的数据将经由 Shell 命令 "sort -k 1" 排序后再送往屏幕(stdout).
+wk程序中, "print$1, $2" 可能反复执行很多次, 其输出的结果将先暂存于 pipe 中,等到该程序结束时, 才会一并进行 "sort -k 1".
+须注意二点 : 不论 print $1, $2 被执行几次, "sort -k 1" 的执行时间是 "awk程序结束时",
+"sort -k 1" 的执行次数是 "一次".
+
+
